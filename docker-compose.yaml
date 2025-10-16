@@ -1,0 +1,78 @@
+version: "3.9"
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:4000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    command: npm run start:dev
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+      MONGO_URL: mongodb://mongo:27017/nest
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SERVICE_TYPE: api
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - mongo
+      - redis
+
+  worker:
+    build:
+      context: ./backend
+    command: sh -c "until nc -z redis 6379; do echo Waiting for Redis; sleep 1; done; npm run start:worker"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+      MONGO_URL: mongodb://mongo:27017/nest
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SERVICE_TYPE: worker
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - redis
+      - postgres
+      - mongo
+
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:6
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
+  mongodata:
