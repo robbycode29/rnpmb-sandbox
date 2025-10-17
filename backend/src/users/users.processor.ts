@@ -1,5 +1,6 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
+import { TaskRegistry, RegisterTask, Task } from './users.decorator';
 
 
 @Processor('users-queue')
@@ -17,35 +18,6 @@ export class UsersProcessor extends WorkerHost {
     onCompleted(job: Job) {
         console.log(`User job ${job.id} completed`);
     }
-}
-
-
-// Task Registry to store and retrieve tasks
-class TaskRegistry {
-    private static tasks: Map<string, Task> = new Map();
-
-    static registerTask(type: string, task: Task) {
-        this.tasks.set(type, task);
-    }
-
-    static getTask(type: string): Task | undefined {
-        return this.tasks.get(type);
-    }
-}
-
-
-// Base Task interface
-interface Task {
-    execute(data: any): void;
-}
-
-
-// Task decorator
-function RegisterTask(type: string) {
-    return function (constructor: new () => Task) {
-        const taskInstance = new constructor();
-        TaskRegistry.registerTask(type, taskInstance);
-    };
 }
 
 
