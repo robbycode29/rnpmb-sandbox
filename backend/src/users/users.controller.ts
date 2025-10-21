@@ -33,7 +33,7 @@ export class UsersController {
 
   @Get()
   async listUsers() {
-    await this.usersService.listUsers();
+    return await this.usersService.listUsers();
   }
 
   @Post('create-user')

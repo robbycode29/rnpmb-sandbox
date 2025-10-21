@@ -6,6 +6,8 @@ import { User } from './users.entity';
 import { DataSource } from 'typeorm';
 import { withTransaction } from '../utils/transaction.helper';
 
+import { plainToInstance } from 'class-transformer';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -20,12 +22,12 @@ export class UsersService {
   }
 
   async listUsers() {
-    await withTransaction(this.dataSource, async (queryRunner) => {
+    return await withTransaction(this.dataSource, async (queryRunner) => {
       const users = await queryRunner.manager.find(User);
-      console.log('List of users:', users);
-      return users;
+      return plainToInstance(User, users, {
+        excludeExtraneousValues: true,
+      });
     });
-    return [];
   }
 
   async createUserDirectly(email: string, password: string) {

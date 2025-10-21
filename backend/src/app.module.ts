@@ -16,6 +16,7 @@ const redisHost = process.env.REDIS_HOST;
 const redisPort = parseInt(process.env.REDIS_PORT ?? '6379', 10);
 
 import * as dotenv from 'dotenv';
+import { SignUpTask } from "./users/users.processor";
 
 dotenv.config();
 
@@ -41,7 +42,7 @@ dotenv.config();
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SignUpTask],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

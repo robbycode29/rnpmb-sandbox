@@ -13,9 +13,11 @@ export async function withTransaction<T>(
     await queryRunner.commitTransaction();
     return result;
   } catch (error) {
+    console.error('Error during transaction, rolling back...', error);
     await queryRunner.rollbackTransaction();
-    throw error;
   } finally {
     await queryRunner.release();
   }
+
+  return Promise.resolve(undefined as unknown as T);
 }
