@@ -16,7 +16,7 @@ const redisHost = process.env.REDIS_HOST;
 const redisPort = parseInt(process.env.REDIS_PORT ?? '6379', 10);
 
 import * as dotenv from 'dotenv';
-import { SignUpTask } from "./users/users.processor";
+import { SignUpTask } from './users/users.processor';
 
 dotenv.config();
 
