@@ -17,7 +17,7 @@ export const signUp = createAsyncThunk(
   'auth/signUp',
   async (userData: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://localhost:4000/users/signup/', {
+      const response = await fetch('http://localhost:4000/users/create-user/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),

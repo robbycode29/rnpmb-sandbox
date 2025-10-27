@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAppDispatch } from '@/redux/hooks';
 import { signUp } from "@/redux/slices/authSlice";
+import { fetchUsers } from "@/redux/slices/usersSlice";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -10,12 +11,13 @@ export default function LoginForm() {
 
   const dispatch = useAppDispatch();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
 
-    dispatch(signUp({ email, password }));
+    await dispatch(signUp({ email, password })).unwrap();
+    dispatch(fetchUsers());
   };
 
   return (
