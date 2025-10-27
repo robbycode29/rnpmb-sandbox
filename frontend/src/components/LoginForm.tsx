@@ -1,15 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { useAppDispatch } from '@/redux/hooks';
+import { signUp } from "@/redux/slices/authSlice";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const dispatch = useAppDispatch();
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
+
+    dispatch(signUp({ email, password }));
   };
 
   return (
